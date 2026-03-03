@@ -1,4 +1,4 @@
-# z-Aritribe-Assinments-Node/finedge-personal-finance-expense-tracker/.gitignore
+# finedge-personal-finance-expense-tracker/.gitignore
 node_modules
 .tap
 .env

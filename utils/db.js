@@ -1,4 +1,4 @@
-// z-Aritribe-Assinments-Node/finedge-personal-finance-expense-tracker/utils/db.js
+// finedge-personal-finance-expense-tracker/utils/db.js
 const mongoose = require("mongoose");
 
 const db_connection = async () => {
