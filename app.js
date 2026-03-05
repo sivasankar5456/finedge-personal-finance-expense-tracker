@@ -1,35 +1,43 @@
-// Node/finedge-personal-finance-expense-tracker/app.js
-const  express = require('express');
-const  cors = require('cors');
-const  db_connection = require('./utils/db.js');
-require('dotenv').config();
-const authRoutes = require('./routes/auth/authRoutes.js')
-const port = process.env.PORT;
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
-const app = express()
-db_connection()
+const db_connection = require("./utils/db");
+const userRoutes = require("./routes/userRoutes");
+const logger = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
 
-app.use(express.urlencoded({ extended: true })); // Using HTML Forms (like <form method="POST">)
-app.use(express.json()) // application/json 
-app.use(cors())
+const app = express();
 
-app.get('/', (req, res) => res.status(200).send('Welcome To The finedge-personal-finance-expense-tracker Application'))
-app.use('/api/v1/auth/users', authRoutes); 
+db_connection();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(logger);
+
+app.get("/health", (req, res) =>
+  res.status(200).send("FinEdge API Running")
+);
+
+app.use("/api/v1/auth/users", userRoutes);
 /*
-http://localhost:3000/api/v1/auth/users/register
+http://localhost:3000/api/v1/auth/users
 http://localhost:3000/api/v1/auth/users/login
 
-register sample payload
+heders: Content-Type: application/json
+
+body:
 {
-  "name": "john doe",
-  "email": "john.doe@example.com",
-  "password": "StrongPass123"
+  "name": "jon doe", // for login this one is not required
+  "email": "jon.doe@example.com",
+  "password": "StrongPass123@"
 }
 */
 
-app.listen(port, (err) => {
-    if (err) {
-        return console.log('Something bad happened', err);
-    }
-    console.log(`Server is listening on ${port}`);
+// GLOBAL ERROR HANDLER (MUST BE LAST)
+app.use(errorHandler);
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is listening on ${process.env.PORT}`);
 });
