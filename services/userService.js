@@ -1,10 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-
 const AppError = require("../utils/AppError");
 
-const register = async (name, email, password) => {
+const register = async (name, email, password, currency) => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
@@ -19,7 +18,8 @@ const register = async (name, email, password) => {
   await User.create({
     name,
     email,
-    password: hashedPassword
+    password: hashedPassword,
+    currency // currency null or undefined default INR currency will be added
   });
 };
 
@@ -37,9 +37,14 @@ const login = async (email, password) => {
   }
 
   const token = jwt.sign(
-    { userId: user._id },
+    {
+      userId: user._id,
+      currency: user.currency
+    },
     process.env.JWT_SECRET,
-    { expiresIn: "3h" }
+    {
+      expiresIn: "3h"
+    }
   );
 
   return token;

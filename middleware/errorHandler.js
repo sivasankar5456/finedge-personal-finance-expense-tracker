@@ -1,5 +1,31 @@
 const errorHandler = (err, req, res, next) => {
-  console.error("ERROR:", err.message);
+  console.error("ERROR:", err);
+
+  // Mongo duplicate key error
+  if (err.code === 11000) {
+    return res.status(400).json({
+      success: false,
+      message: "Resource already exists"
+    });
+  }
+
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    const messages = Object.values(err.errors).map((val) => val.message);
+
+    return res.status(400).json({
+      success: false,
+      message: messages.join(", ")
+    });
+  }
+
+  // Invalid Mongo ObjectId
+  if (err.name === "CastError") {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid resource ID"
+    });
+  }
 
   res.status(err.statusCode || 500).json({
     success: false,
@@ -8,3 +34,14 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = errorHandler;
+
+// const errorHandler = (err, req, res, next) => {
+//   console.error("ERROR:", err.message);
+
+//   res.status(err.statusCode || 500).json({
+//     success: false,
+//     message: err.message || "Internal Server Error"
+//   });
+// };
+
+// module.exports = errorHandler;

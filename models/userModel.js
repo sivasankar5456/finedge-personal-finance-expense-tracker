@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ALL_WORLD_CURRENCIES = require('../config/currencies')
 
 const userSchema = new mongoose.Schema(
   {
@@ -28,6 +29,28 @@ const userSchema = new mongoose.Schema(
       minlength: [8, "Password must be at least 8 characters"],
       select: false, // Never return password by default
     },
+    currency: {
+      type: String,
+      required: [true, "Currency is required"],
+      default: "INR",
+      uppercase: true,
+      trim: true,
+
+      enum: {
+        values: ALL_WORLD_CURRENCIES,
+        message: (props) =>
+          `${props.value} is not a valid ISO-4217 currency code`
+      },
+
+      validate: {
+        validator: function (value) {
+          return ALL_WORLD_CURRENCIES.includes(value);
+        },
+        message: (props) =>
+          `Invalid currency '${props.value}'. Please use a valid ISO-4217 currency code`
+      }
+    }
+
   },
   {
     timestamps: true,

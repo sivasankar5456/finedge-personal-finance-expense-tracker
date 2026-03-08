@@ -5,6 +5,7 @@ const AppError = require("../utils/AppError");
 const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    // console.log('authHeader', req.headers)
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new AppError("Authorization token missing", 401);
@@ -19,8 +20,8 @@ const authenticateUser = async (req, res, next) => {
     if (!user) {
       throw new AppError("Invalid token", 401);
     }
-
     req.user = user;
+    req.user.userId = user._id
     next();
 
   } catch (error) {
