@@ -101,5 +101,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWFhM
 app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server is listening on ${process.env.PORT}`);
+  console.log(`finedge-personal-finance-expense Server is listening on ${process.env.PORT}`);
 });
